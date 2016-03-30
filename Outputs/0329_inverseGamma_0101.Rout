@@ -1,0 +1,140 @@
+
+R version 3.2.3 (2015-12-10) -- "Wooden Christmas-Tree"
+Copyright (C) 2015 The R Foundation for Statistical Computing
+Platform: x86_64-redhat-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> hiernormalinvg<-"
++ data{ #get the data set 
++ int<lower=0> N;   # number of exon level
++ int<lower=0> J;   # number of gene level
++ int <lower=1,upper=J> gene[N];  #index of gene
++ int <lower=1,upper=N> exon[N];  #index of exon 
++ vector[N] xij;   #x at exon level
++ vector[N] yij; #y at exon level
++ }
++ parameters{ #specify the parameter we want to know 
++ real beta;  #common slope for the exon level
++ real mu;      #common intercept for the exon level
++ vector[N] aij; #random intercept for the exon level
++ real <lower=0> sigma_aj2[J];  #variance of intercept at exon level 
++ vector[J] aj; #random intercept for the gene level 
++ real <lower=0> sigma_a;  #variance of intercept at gene level
++ real <lower=0> sigma; #variance of yij
++ }
++ transformed parameters{ #specify the model we will use 
++ 	vector[N] lambdaij; #exon level model
++         for (i in 1:N)
++         lambdaij[i] <- mu+beta*xij[i]+aij[exon[i]]+aj[gene[i]];#specify the gene group
++ }
++ model { #give the prior distribution 
++    
++    beta ~normal(0,50);
++    mu~normal(0,50);
++    sigma ~ uniform(0, 20);
++    sigma_a ~uniform(0,10);
++    sigma_aj2 ~inv_gamma(0.1,0.1);
++    aj ~ normal(0, sigma_a);
++    for (i in 1:N)
++        aij[i]~ normal(0,sqrt(sigma_aj2[gene[i]]));
++    yij ~ normal(lambdaij,sigma);
++    }
++ generated quantities{
++     real y_pred[N];
++     for (i in 1:N){
++         y_pred[i] <- normal_rng(lambdaij[i],sigma);
++         }  
++ }
++ "
+> library("rstan")
+Loading required package: Rcpp
+Loading required package: ggplot2
+rstan (Version 2.8.0, packaged: 2015-09-19 14:48:38 UTC, GitRev: 05c3d0058b6a)
+For execution on a local, multicore CPU with excess RAM we recommend calling
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+> J<-dim(table1)[1] #gene number 
+> N<-dim(table)[1]  #exon number 
+> xij=c(table$envarp)
+> yij=log(table$envarpfc+0.01)
+> gene<-as.numeric(table$gene) #list
+> genelevel<-length(unique(gene)) #number
+> indexg<-match(gene, unique(gene))  #list
+> exon<-c(1:length(table$envarpfc))
+> M1_table<-list(N=N, J=J, xij=xij,
++ yij=yij,gene=indexg, exon=exon)
+> control=list(adapt_delta=0.99,max_treedepth=12)
+> fitinv<-stan(model_code=hiernormalinvg, data=M1_table,iter=40000,warmup=35000,chains=4) #10,000 samplings 
+
+SAMPLING FOR MODEL 'fbb1a6023f329aa3553d4f40416e4ff5' NOW (CHAIN 1).
+
+Chain 1, Iteration:     1 / 40000 [  0%]  (Warmup)
+Chain 1, Iteration:  4000 / 40000 [ 10%]  (Warmup)
+Chain 1, Iteration:  8000 / 40000 [ 20%]  (Warmup)
+Chain 1, Iteration: 12000 / 40000 [ 30%]  (Warmup)
+Chain 1, Iteration: 16000 / 40000 [ 40%]  (Warmup)
+Chain 1, Iteration: 20000 / 40000 [ 50%]  (Warmup)
+Chain 1, Iteration: 24000 / 40000 [ 60%]  (Warmup)
+Chain 1, Iteration: 28000 / 40000 [ 70%]  (Warmup)
+Chain 1, Iteration: 32000 / 40000 [ 80%]  (Warmup)
+Chain 1, Iteration: 35001 / 40000 [ 87%]  (Sampling)
+Chain 1, Iteration: 39000 / 40000 [ 97%]  (Sampling)
+Chain 1, Iteration: 40000 / 40000 [100%]  (Sampling)
+#  Elapsed Time: 15220.1 seconds (Warm-up)
+#                2224.11 seconds (Sampling)
+#                17444.2 seconds (Total)
+
+The following numerical problems occured the indicated number of times on chain 1
+                                                                                count
+Exception thrown at line 34: normal_log: Scale parameter is 0, but must be > 0!     1
+If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+SAMPLING FOR MODEL 'fbb1a6023f329aa3553d4f40416e4ff5' NOW (CHAIN 2).
+
+Chain 2, Iteration:     1 / 40000 [  0%]  (Warmup)
+Chain 2, Iteration:  4000 / 40000 [ 10%]  (Warmup)
+Chain 2, Iteration:  8000 / 40000 [ 20%]  (Warmup)
+Chain 2, Iteration: 12000 / 40000 [ 30%]  (Warmup)
+Chain 2, Iteration: 16000 / 40000 [ 40%]  (Warmup)
+Chain 2, Iteration: 20000 / 40000 [ 50%]  (Warmup)
+Chain 2, Iteration: 24000 / 40000 [ 60%]  (Warmup)
+Chain 2, Iteration: 28000 / 40000 [ 70%]  (Warmup)
+Chain 2, Iteration: 32000 / 40000 [ 80%]  (Warmup)
+Chain 2, Iteration: 35001 / 40000 [ 87%]  (Sampling)
+Chain 2, Iteration: 39000 / 40000 [ 97%]  (Sampling)
+Chain 2, Iteration: 40000 / 40000 [100%]  (Sampling)
+#  Elapsed Time: 15090.5 seconds (Warm-up)
+#                2226.57 seconds (Sampling)
+#                17317.1 seconds (Total)
+
+The following numerical problems occured the indicated number of times on chain 2
+                                                                                count
+Exception thrown at line 31: normal_log: Scale parameter is 0, but must be > 0!     1
+If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
+
+SAMPLING FOR MODEL 'fbb1a6023f329aa3553d4f40416e4ff5' NOW (CHAIN 3).
+
+Chain 3, Iteration:     1 / 40000 [  0%]  (Warmup)
+Chain 3, Iteration:  4000 / 40000 [ 10%]  (Warmup)
+Chain 3, Iteration:  8000 / 40000 [ 20%]  (Warmup)
+Chain 3, Iteration: 12000 / 40000 [ 30%]  (Warmup)
+Chain 3, Iteration: 16000 / 40000 [ 40%]  (Warmup)
+Chain 3, Iteration: 20000 / 40000 [ 50%]  (Warmup)
+Chain 3, Iteration: 24000 / 40000 [ 60%]  (Warmup)
+Chain 3, Iteration: 28000 / 40000 [ 70%]  (Warmup)
+Chain 3, Iteration: 32000 / 40000 [ 80%]  (Warmup)
