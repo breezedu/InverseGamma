@@ -7,4 +7,4 @@
 #SBATCH --nodes=2
 #SBATCH --job-name=InvGama11
 
-R CMD BATCH ./0329_inverse_gamma_11.R
+R CMD BATCH ./0330_inverseGamma_11.R
