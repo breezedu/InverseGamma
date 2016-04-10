@@ -4,7 +4,7 @@
 #SBATCH --mail-user=jeff.du@duke.edu
 #SBATCH -c 12
 #SBATCH --mem-per-cpu=8G
-#SBATCH --nodes=10
+#SBATCH --nodes=2
 #SBATCH --job-name=InvGama11
 
-R CMD BATCH ./0405_inverseGamma_11.R
+R CMD BATCH ./0409_inverseGamma_EpsEps.R
