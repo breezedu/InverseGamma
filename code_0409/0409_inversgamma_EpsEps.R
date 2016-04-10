@@ -1,21 +1,21 @@
 hiernormalinvg<-"
-data{ #get the data set 
-int<lower=0> N;   # number of exon level
-int<lower=0> J;   # number of gene level
-int <lower=1,upper=J> gene[N];  #index of gene
-int <lower=1,upper=N> exon[N];  #index of exon 
-vector[N] xij;   #x at exon level
-vector[N] yij; #y at exon level
+  data{ #get the data set 
+  int<lower=0> N;   # number of exon level
+  int<lower=0> J;   # number of gene level
+  int <lower=1,upper=J> gene[N];  #index of gene
+  int <lower=1,upper=N> exon[N];  #index of exon 
+  vector[N] xij;   #x at exon level
+  vector[N] yij; #y at exon level
 }
 parameters{ #specify the parameter we want to know 
-real beta;  #common slope for the exon level
-real mu;      #common intercept for the exon level
-vector[N] aij; #random intercept for the exon level
-real <lower=0> sigma_aj2[J];  #variance of intercept at exon level 
-vector[J] aj; #random intercept for the gene level 
-real <lower=0> sigma_a;  #variance of intercept at gene level
-real <lower=0> sigma; #variance of yij
-real <lower=0> eps; #hyperparameter for sigma_aj
+  real beta;  #common slope for the exon level
+  real mu;      #common intercept for the exon level
+  vector[N] aij; #random intercept for the exon level
+  real <lower=0> sigma_aj2[J];  #variance of intercept at exon level 
+  vector[J] aj; #random intercept for the gene level 
+  real <lower=0> sigma_a;  #variance of intercept at gene level
+  real <lower=0> sigma; #variance of yij
+  real <lower=0> eps; #hyperparameter for sigma_aj
 }
 transformed parameters{ #specify the model we will use 
 	}
@@ -37,7 +37,17 @@ model { #give the prior distribution
    }
 
 "
+
+
+
+##################################################################
+###        load RStan package
+##################################################################
+
 library("rstan")
+
+
+
 J<-dim(tablesum)[1] #gene number 
 N<-dim(table)[1]  #exon number 
 xij=c(table$envarp)
@@ -50,8 +60,21 @@ exon<-c(1:length(table$envarpfc))
 M1_table<-list(N=N, J=J, xij=xij,
 yij=yij,gene=indexg, exon=exon)
 control=list(adapt_delta=0.99,max_treedepth=12)
+
+
+
+
+##################################################################
+###      fit the stan model
+##################################################################
 #fitinv<-stan(model_code=hiernormalinvg, data=M1_table,iter=40000,warmup=35000,chains=4) #10,000 samplings 
-fitinv<-stan(model_code=hiernormalinvg, data=M1_table,iter=100,chains=1) #10,000 samplings 
+fitinv<-stan(model_code=hiernormalinvg, data=M1_table, iter=40000, warmup=36000, chains=4) #10,000 samplings 
+
+
+
+##################################################################
+## print alpha, gamma, and rhat
+##################################################################
 print(fitinv)
 
 answer<-extract(fitinv,permuted=TRUE)
@@ -60,8 +83,13 @@ print(answer$aij)
 
 
 
+
+##################################################################
+###           plot results
+##################################################################
+
 plotdes<-function(J,N){
-	pdf(file = "inverse gamma (eps,eps) prior variance density plot.pdf")
+	pdf(file = "0409inverseGamma_EpsEps_priorVarianceDensityPlot.pdf")
 	for (i in 1:J){
 		plot(density(answer$sigma_aj2[,i]),main=c("density plot of exon-level variance",i))
 		}
@@ -82,4 +110,6 @@ plotdes(J,N)
 
 
 
-
+##################################################################
+###        END
+##################################################################
