@@ -50,7 +50,7 @@ exon<-c(1:length(table$envarpfc))
 M1_table<-list(N=N, J=J, xij=xij,
 yij=yij,gene=indexg, exon=exon)
 control=list(adapt_delta=0.99,max_treedepth=12)
-fitinv<-stan(model_code=hiernormalinvg, data=M1_table,iter=40000,warmup=35000,chains=4) #10,000 samplings 
+fitinv<-stan(model_code=hiernormalinvg, data=M1_table,iter=60000,warmup=45000,chains=4) #10,000 samplings 
 #fitinv<-stan(model_code=hiernormalinvg, data=M1_table,iter=2000,chains=4) #10,000 samplings 
 print(fitinv)
 
