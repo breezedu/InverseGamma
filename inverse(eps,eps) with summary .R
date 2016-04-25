@@ -54,6 +54,7 @@ fitinv<-stan(model_code=hiernormalinvg, data=M1_table,iter=40000,warmup=35000,ch
 #fitinv<-stan(model_code=hiernormalinvg, data=M1_table,iter=2000,chains=4) #10,000 samplings 
 print(fitinv)
 
+
 answer<-extract(fitinv,permuted=TRUE)#extract samples
 
 #get the mode of the sample distribution
@@ -67,9 +68,10 @@ mode=rep(0,N)
 mean=rep(0,N)
 median=rep(0,N)
 for ( i in 1: N){
-      mode[i]=Mode(answer$aij[i]+answer$aj[indexg[i]])
-	  mean[i]=mean(answer$aij[i]+answer$aj[indexg[i]])
-	  median[i]=median(answer$aij[i]+answer$aj[indexg[i]])
+      mode[i]=Mode(answer$aij[,i]+answer$aj[,indexg[i]])
+	  mean[i]=mean(answer$aij[,i]+answer$aj[,indexg[i]])
+	  median[i]=median(answer$aij[,i]+answer$aj[,indexg[i]])
 }
 summary=cbind(mode,mean,median,indexg)
 print(summary)
+write.table (summary, "3msummary.txt",sep="\t")
