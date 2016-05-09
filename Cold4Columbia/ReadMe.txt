@@ -16,7 +16,9 @@ Scripts and dataset in this repository:
 
 ####################################################
 Pre-required packages for RStan:
-Rcpp, RcppEigen, BH, stats4, 
+R version 3.2.4 or above
+Rcpp, RcppEigen, BH, stats4, EDISON
+Have to install RStan package before submitting the scripts
 
 
 
