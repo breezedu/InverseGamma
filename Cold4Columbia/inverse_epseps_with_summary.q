@@ -4,7 +4,7 @@
 #SBATCH --mail-user=jeff.du@duke.edu
 #SBATCH -c 12
 #SBATCH --mem-per-cpu=8G
-#SBATCH --nodes=4
-#SBATCH --job-name=0425
+#SBATCH --nodes=16
+#SBATCH --job-name=Rstan
 
-R CMD BATCH ./0425_inverse_epseps_with_summary.R
+R CMD BATCH ./inverse_epseps_with_summary.R
