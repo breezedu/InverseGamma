@@ -1,3 +1,5 @@
+
+
 setwd("/Users/shuaiqizhang/Desktop/project /data ")
 table<-read.table("/dscrhome/gd44/SQProject/RStan/2016_spring/exon_level_process_v2.txt")
 colnames(table)<- c("chr", "gene", "dom", "subdom", "exon", "gene.dom", 
