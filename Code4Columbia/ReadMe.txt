@@ -34,8 +34,8 @@ The sbatch script will allocate memory needed and the R script
 ######################################################
 ##	sbatch sample:
 ## 	Here in this sbatch script, we allocated 16 nodes, 
-##      For each node, we allocated 12 
-## 	For each cpu we could allocate 8G memory.
+##      For each node, we allocated 12 CPUs.
+## 	For each CPU we could allocate 8G memory.
 
 	#!/bin/sh
 
@@ -85,8 +85,8 @@ The sbatch script will allocate memory needed and the R script
 ######################################################
 ##	sbatch sample:
 ## 	Here in this sbatch script, we allocated 16 nodes, 
-##      For each node, we allocated 12 
-## 	For each cpu we could allocate 8G memory.
+##      For each node, we allocated 12 CPUs.
+## 	For each CPU we could allocate 8G memory.
 
 	#!/bin/sh
 
