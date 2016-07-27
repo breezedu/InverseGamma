@@ -34,7 +34,8 @@ The sbatch script will allocate memory needed and the R script
 ######################################################
 ##	sbatch sample:
 ## 	Here in this sbatch script, we allocated 16 nodes, 
-##      there are 12 cpus on each node, and for each cpu there are 8G memory.
+##      For each node, we allocated 12 
+## 	For each cpu we could allocate 8G memory.
 
 	#!/bin/sh
 
@@ -84,7 +85,8 @@ The sbatch script will allocate memory needed and the R script
 ######################################################
 ##	sbatch sample:
 ## 	Here in this sbatch script, we allocated 16 nodes, 
-##      there are 12 cpus on each node, and for each cpu there are 8G memory.
+##      For each node, we allocated 12 
+## 	For each cpu we could allocate 8G memory.
 
 	#!/bin/sh
 
@@ -93,7 +95,7 @@ The sbatch script will allocate memory needed and the R script
 	#SBATCH -c 12
 	#SBATCH --mem-per-cpu=8G
 	#SBATCH --nodes=5
-	#SBATCH --job-name=Rstan
+	#SBATCH --job-name=lme4_SQ
 
 	R CMD BATCH ./0725_lmer_shuaiqi.R
 #####################################################
