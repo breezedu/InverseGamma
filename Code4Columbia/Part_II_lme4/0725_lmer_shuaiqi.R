@@ -1,8 +1,15 @@
 #####################################################################
-## Data management
+## LME4 
 ## 0726 Shuaiqi 
+#####################################################################
 
-setwd("")
+
+#####################################################################
+## part 1
+## Data manipulation
+#####################################################################
+
+## setwd("")
 table <- read.table("exon_level_process_v2.txt")
 colnames(table) <- c("chr", "gene", "dom", "subdom", "exon", "gene.dom", 
              "gene.dom.subdom", 
@@ -40,10 +47,11 @@ expdata <- expanddata(data,gene)
 expdata$y <- log(expdata$envarpfc+0.01)
 write.table(expdata, file = "expand data.txt")
 
-########################################################################
 
-### lmer model
-#################################################
+########################################################################
+#### part 2
+#### lmer model
+########################################################################
 library("lme4")
 
 setwd("")
@@ -64,20 +72,20 @@ form <- formular(gene)
 
 
 
-#change the designe matrix 
-#options(expressions=1000000)
+## change the designe matrix 
+## options(expressions=1000000)
 lmod <- lFormula(form,data=expdata)
 
-#options(max.print= 10000, width = 100)
+## options(max.print= 10000, width = 100)
 
-#change Zt matrix 
+## change Zt matrix 
 Z <- lmod$reTrms$Zt
 name <- dimnames(Z)[[1]] #get the factor names 
 position <- which(name%in%"0")
 lmod$reTrms$Zt[position,] <- rep(0,dim(Z)[2])#change the sparse matrix for "0" group 
 
 
-#change Ztlist
+## change Ztlist
 Ztlistc <- function(gene,Ztlist,Z){
   n <- length(unique(gene))
   for ( i in 2:n){
@@ -105,7 +113,7 @@ dfun <- do.call(mkLmerDevfun,lmod)   ## create dev fun from modified lf
 opt<-optimizeLmer(dfun,optimizer="Nelder_Mead",control=list(maxfun=5000000))
 
 ##  opt <- Nelder_Mead(devfunw,control=list(maxfun=5000000),par=lmod$reTrms$theta,
-  ##  lower = rep.int(0,length(lmod$reTrms$theta)), upper = rep.int(Inf, length(lmod$reTrms$theta)) )   
+##  lower = rep.int(0,length(lmod$reTrms$theta)), upper = rep.int(Inf, length(lmod$reTrms$theta)) )   
 
 opt$fval  #numeric scalar - the minimum function value achieved
 opt$convergence #integer valued scalar, if not 0, an error code
@@ -115,7 +123,7 @@ opt$convergence #integer valued scalar, if not 0, an error code
 fit <- mkMerMod(environment(dfun), opt, lmod$reTrms,
                 fr = lmod$fr)
 
-#write result to txt file         
+## write result to txt file         
 out <- capture.output(fit)
 
 cat(out,file="sdrandomeffect.txt",sep="\n",append=TRUE)
@@ -128,6 +136,7 @@ cat(randomgene, file = "randomintercept.txt",sep="\n",append=TRUE)
 print(as.data.frame(VarCorr(fit)))#covaraince matrix between random intercepts 
 
 
+########################################################################################################
 ## END
 ########################################################################################################
 
