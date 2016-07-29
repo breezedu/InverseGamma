@@ -45,7 +45,7 @@ data <- table
 gene <- data$gene
 expdata <- expanddata(data,gene)
 expdata$y <- log(expdata$envarpfc+0.01)
-write.table(expdata, file = "expand data.txt")
+write.table(expdata, file = "expand_data.txt")
 
 
 ########################################################################
