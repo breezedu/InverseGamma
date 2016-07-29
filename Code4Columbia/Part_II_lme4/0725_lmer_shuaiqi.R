@@ -54,7 +54,9 @@ write.table(expdata, file = "expand data.txt")
 ########################################################################
 library("lme4")
 
-setwd("")
+## setwd("")
+
+
 expdata <- read.table("expand data.txt")
 #get the formular
 formular<-function(gene){
